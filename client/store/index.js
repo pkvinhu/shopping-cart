@@ -7,11 +7,12 @@ import axios from 'axios'
 const initialState = {
   products: [],
   items: {},
-  action: ''
+  orders: []
 }
 
 // ACTION CONSTANTS
 const GET_PRODUCTS = 'GET_PRODUCTS'
+const GET_ORDERS = 'GET_ORDERS'
 const INCREMENT = 'INCREMENT'
 const DECREMENT = 'DECREMENT'
 
@@ -19,6 +20,11 @@ const DECREMENT = 'DECREMENT'
 export const getProducts = products => ({
   type: GET_PRODUCTS,
   products
+})
+
+export  const getOrders = orders => ({
+  type: GET_ORDERS,
+  orders
 })
 
 export const increment = product => ({
@@ -39,8 +45,11 @@ export const _loadProducts = () => async dispatch => {
   dispatch(action)
 }
 
-export const _editItems = () => async dispatch => {
-
+export const _loadOrders = () => async dispatch => {
+  const response = await axios.get('/api/orders')
+  const orders = response.data
+  const action = getOrders(orders)
+  dispatch(action)
 }
 
 // REDUCER
@@ -52,21 +61,30 @@ const reducer = (state=initialState, action)=> {
 	      products: action.products
 	    }
 
+	  case GET_ORDERS:
+	    return {
+	      ...state,
+	      orders: action.orders
+	    }
+
 	  case INCREMENT:
-	  return state.items.product ?
+	  return state.items.action.product ?
 	    {
 	      ...state,
-	      items: {...items, action.product++}
+	      items: {...state.items, [action.product]: state.action.product+1}
 	    } :
 	    {
 	      ...state,
-	      items: {...items, action.product: 1}
+	      items: {...state.items, [action.product]: 1}
 	    }
 
-	  // case DECREMENT:
-	  //   return state.items.product === 1 ?
+	  case DECREMENT:
+	    return {
+	      ...state,
+	      items: {...state.items, [action.product]: state.action.product-1}
+	    }
 
-	    
+
 	  default:
 	    return state
 	}
