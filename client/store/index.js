@@ -15,6 +15,7 @@ const GET_PRODUCTS = 'GET_PRODUCTS'
 const GET_ORDERS = 'GET_ORDERS'
 const INCREMENT = 'INCREMENT'
 const DECREMENT = 'DECREMENT'
+const RELOAD = 'RELOAD'
 
 // ACTION CREATORS
 export const getProducts = products => ({
@@ -35,6 +36,10 @@ export const increment = product => ({
 export const decrement = product => ({
   type: DECREMENT,
   product
+})
+
+export const reload = () => ({
+  type: RELOAD
 })
 
 // THUNK CREATORS
@@ -68,20 +73,25 @@ const reducer = (state=initialState, action)=> {
 	    }
 
 	  case INCREMENT:
-	  return state.items.action.product ?
+	  return state.items.hasOwnProperty(action.product.name) ?
 	    {
 	      ...state,
-	      items: {...state.items, [action.product]: state.action.product+1}
+	      items: {...state.items, [action.product.name]: state.items[action.product.name]+1}
 	    } :
 	    {
 	      ...state,
-	      items: {...state.items, [action.product]: 1}
+	      items: {...state.items, [action.product.name]: 1}
 	    }
 
 	  case DECREMENT:
 	    return {
 	      ...state,
-	      items: {...state.items, [action.product]: state.action.product-1}
+	      items: {...state.items, [action.product.name]: state.items[action.product.name]-1}
+	    }
+
+	  case RELOAD:
+	    return {
+	      ...state
 	    }
 
 

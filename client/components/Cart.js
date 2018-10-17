@@ -13,26 +13,28 @@ class Cart extends Component {
   }
 
   render(){
-  	const { products } = this.props;
+  	const { products, items } = this.props;
+
   	return (
   	  <div>
   	   <Grid container spacing={12} style={{ padding: '60px'}}>
   	    {products.map(product=> {
   	      return (
-  	      	<Product name={product.name}/>
+  	      	<Product product={product}/>
   	      )
   	    })}
   	    </Grid>
-  	    <Button ><Icon>shopping-cart-plus</Icon>{' CREATE'}</Button>
+  	    <Button disabled={Object.keys(items).length < 1 || Object.values(items).reduce((acc, curr)=>{return acc+=curr}, 0) === 0 ? true : false}><Icon>shopping-cart-plus</Icon>{' CREATE'}</Button>
   	  </div>
   	)
   }
 }
 
 const mapStateToProps = state => {
-  const { products } = state
+  const { products, items } = state
   return {
-  	products: products
+  	products: products,
+  	items: items
   }
 }
 

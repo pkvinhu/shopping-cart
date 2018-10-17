@@ -9,7 +9,7 @@ class Orders extends Component {
   	const { orders } = this.props;
   	return (
   	  <div>
-  	  {orders ? 
+  	  {orders.length ? 
   	   orders.map(order => {
   	   	 return (
   	   	 	<div>
@@ -18,7 +18,7 @@ class Orders extends Component {
   	   	 	</div>
   	   	 )
   	   }) :
-  	  <Typography variant='display3'>You currently have no orders!</Typography>
+  	  <Typography style={{ position: 'absolute', bottom: '0', right: '0', float: 'right' }} variant='display2' color='secondary'>You currently have no orders!</Typography>
   	  }
   	  </div>
   	)
