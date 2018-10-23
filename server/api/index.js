@@ -52,11 +52,23 @@ router.delete('/orders/:orderId/lineItems/:id', (req, res, next)=> {
 });
 
 //create lineItem
-router.post('/orders/:orderId/lineItems/', (req, res, next)=> {
-  LineItem.create({ orderId: req.params.orderId, quantity: req.body.quantity, productId: req.body.productId })
-    .then( lineItem => res.send(lineItem))
-    .catch(next);
+router.post('/orders/:orderId/lineItems', async (req, res, next)=> {
+  try{
+    const lineItem = await LineItem.create({ orderId: req.params.orderId, quantity: 1, productId: req.body.item.id })
+
+    res.send(lineItem)
+  }
+  catch(er){next(er)}
 });
+
+//create order
+router.post('/orders', async (req, res, next) => {
+  try{
+	  const order = await Order.create()
+	  res.send(order)
+  }
+  catch(er){next(er)}
+})
 
 //update order
 router.put('/orders/:id', (req, res, next)=> {
@@ -65,3 +77,16 @@ router.put('/orders/:id', (req, res, next)=> {
     .then( order => res.send(order))
     .catch(next);
 });
+
+//delete order
+router.delete('/orders/:id', async(req, res, next) => {
+  try{
+    const items = await LineItem.findAll({where:{orderId: req.params.id}})
+    const order = await Order.findOne({where: {id: req.params.id}, include: [LineItem]})
+    console.log('These are lineitems: ', items)
+    if(items.length){items.map(each => each.destroy())}
+    await order.destroy()
+	res.sendStatus(204).end()
+  }
+  catch(er) {next(er)}  
+})
